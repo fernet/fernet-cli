@@ -30,15 +30,15 @@ end.parse!
 
 if ENV["FERNET_CLI_KEY"].nil?
   if options[:prompt]
-    KEY = ask("Enter Key: ") {|q| q.echo = false}
+    key = ask("Enter Key: ") {|q| q.echo = false}
   elsif options[:keyfile]
-    KEY = File.read(options[:keyfile]).chomp
+    key = File.read(options[:keyfile]).chomp
   end
 else
-  KEY=ENV["FERNET_CLI_KEY"]
+  key=ENV["FERNET_CLI_KEY"]
 end
 
-if KEY.nil?
+if key.nil?
   puts "i have no key"
   exit(1)
 end
@@ -48,7 +48,7 @@ if options[:cipherfile].nil? or (! File.readable?(options[:cipherfile]))
   exit(1)
 end
 
-plaintext = Fernet.verifier(KEY.chomp, File.read(options[:cipherfile]),
+plaintext = Fernet.verifier(key.chomp, File.read(options[:cipherfile]),
                             enforce_ttl: options[:ttl])
 if ! plaintext.valid?
   puts "ciphertext corrupt"
