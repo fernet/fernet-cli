@@ -20,9 +20,6 @@ module Fernet
       op = OptionParser.new do |opts|
         opts.banner = "Usage: #{$0} [-p | -k <keyfile>] -i <infile> -o <outfile>"
 
-        opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
-          @options[:verbose] = v
-        end
         opts.on("-p", "--prompt", "Prompt for keys") do |prompt|
           @options[:prompt] = prompt
         end
@@ -34,9 +31,6 @@ module Fernet
         end
         opts.on("-o", "--outfile OUTPUTFILE") do |outfile|
           @options[:outfile] = outfile
-        end
-        opts.on("--enforce-ttl") do |ttl|
-          options[:ttl] = true
         end
       end
       op.parse!
@@ -87,7 +81,7 @@ module Fernet
 
     def decrypt
       plaintext = Fernet.verifier(@key, @in_fd.read,
-                                  enforce_ttl: @options[:ttl])
+                                  enforce_ttl: false)
       abort("ciphertext corrupt") unless plaintext.valid?
       
       @out_fd.write(plaintext.message)
