@@ -68,6 +68,7 @@ module Fernet
         in_fd = $stdin
       else
         abort("can't read input file") unless File.readable?(@options[:infile])
+        in_fd = File.open(@options[:infile])
       end
 
       if @options[:outfile] == "-"
