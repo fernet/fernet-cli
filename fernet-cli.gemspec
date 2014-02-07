@@ -14,7 +14,9 @@ Gem::Specification.new do |gem|
   gem.name          = "fernet-cli"
   gem.require_paths = ["lib"]
   gem.version       = Fernet::CLI::VERSION
+  gem.license       = "Apache-2.0"
 
-  gem.add_runtime_dependency "fernet", ">= 2.0"
-  gem.add_development_dependency "rspec"
+  gem.add_runtime_dependency "fernet", "~> 2.0"
+  gem.add_runtime_dependency "highline", "~> 1.6"
+  gem.add_development_dependency "rspec", "~> 2.14"
 end
