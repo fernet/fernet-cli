@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require 'fernet'
+require 'optparse'
+require 'highline/import'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: fernet-encrypt [-p | -k <keyfile>] -i <plaintext> -o <ciphertext>"
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+  opts.on("-p", "--prompt", "Prompt for keys") do |prompt|
+    options[:prompt] = prompt
+  end
+  opts.on("-k", "--keyfile KEYFILE") do |keyfile|
+    options[:keyfile] = keyfile
+  end
+  opts.on("-i", "--infile PLAINFILE") do |plainfile|
+    options[:plainfile] = plainfile
+  end
+  opts.on("-o", "--outfile CIPHERFILE") do |cipherfile|
+    options[:cipherfile] = cipherfile
+  end
+end.parse!
+
+if ENV["FERNET_CLI_KEY"].nil?
+  if options[:prompt]
+    KEY = ask("Enter Key: ") {|q| q.echo = false}
+  elsif options[:keyfile]
+    KEY = File.read(options[:keyfile]).chomp
+  end
+else
+  KEY=ENV["FERNET_CLI_KEY"]
+end
+
+if KEY.nil?
+  puts "i have no key"
+  exit(1)
+end
+
+if options[:plainfile].nil? or (! File.readable?(options[:plainfile]))
+  puts "can't read plaintext file"
+  exit(1)
+end
+
+File.open(options[:cipherfile], "w+") do |f|
+  f.write(Fernet.generate(KEY.chomp, File.read(options[:plainfile])))
+end

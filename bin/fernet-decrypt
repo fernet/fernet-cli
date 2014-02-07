@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+
+require 'fernet'
+require 'optparse'
+require 'highline/import'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: fernet-decrypt [-p | -k <keyfile>] -i <ciphertext> -o <plaintext>"
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+  opts.on("-p", "--prompt", "Prompt for keys") do |prompt|
+    options[:prompt] = prompt
+  end
+  opts.on("-k", "--keyfile KEYFILE") do |keyfile|
+    options[:keyfile] = keyfile
+  end
+  opts.on("-i", "--infile CIPHERFILE") do |cipherfile|
+    options[:cipherfile] = cipherfile
+  end
+  opts.on("-o", "--outfile PLAINFILE") do |plainfile|
+    options[:plainfile] = plainfile
+  end
+  opts.on("--enforce-ttl") do |ttl|
+    options[:ttl] = true
+  end
+end.parse!
+
+if ENV["FERNET_CLI_KEY"].nil?
+  if options[:prompt]
+    KEY = ask("Enter Key: ") {|q| q.echo = false}
+  elsif options[:keyfile]
+    KEY = File.read(options[:keyfile]).chomp
+  end
+else
+  KEY=ENV["FERNET_CLI_KEY"]
+end
+
+if KEY.nil?
+  puts "i have no key"
+  exit(1)
+end
+
+if options[:cipherfile].nil? or (! File.readable?(options[:cipherfile]))
+  puts "can't read ciphertext file"
+  exit(1)
+end
+
+plaintext = Fernet.verifier(KEY.chomp, File.read(options[:cipherfile]),
+                            enforce_ttl: options[:ttl])
+if ! plaintext.valid?
+  puts "ciphertext corrupt"
+  exit(1)
+end
+
+File.open(options[:plainfile], "w+") do |f|
+  f.write(plaintext.message)
+end
