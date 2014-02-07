@@ -4,7 +4,7 @@ fernet-cli
 Now, the power of [Fernet](https://github.com/fernet/spec) is
 available from the shell!
 
-# tl;dr
+## tl;dr
 
 ```
 tmaher@og-kush:~$ gem install fernet-cli
