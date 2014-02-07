@@ -4,7 +4,16 @@ fernet-cli
 Now, the power of [Fernet](https://github.com/fernet/spec) is
 available from the shell!
 
+# tl;dr
+
 ```
+tmaher@og-kush:~$ gem install fernet-cli
+Fetching: fernet-cli-0.4.gem (100%)
+Successfully installed fernet-cli-0.4
+Parsing documentation for fernet-cli-0.4
+Installing ri documentation for fernet-cli-0.4
+Done installing documentation for fernet-cli after 0 seconds
+1 gem installed
 tmaher@og-kush:~$ fernet-encrypt --help
 Usage: fernet-encrypt [-p | -k <keyfile>] -i <infile> -o <outfile>
     -p, --prompt                     Prompt for keys
