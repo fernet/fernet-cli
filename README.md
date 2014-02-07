@@ -32,3 +32,11 @@ ciphertext.  For `fernet-decrypt`, the infile is ciphertext and the
 outfile is plaintext.  
 
 For more information, see https://github.com/fernet/spec
+
+## WARNING
+These helpers support the convention of specifying `-` for a filename
+to mean stdin/stdout.  However, the Ruby implementation of Fernet
+currently has to read the complete message into memory before
+encrypting/decrypting.  If you're planning on using this in any
+vaguely complicated shell pipeline, your computer's memory usage will
+assplode. 
