@@ -12,7 +12,7 @@ module Fernet
     end
 
     def abort msg="unspecified error"
-      $stderr.puts msg, @op_obj.banner, @op_obj.summarize
+      $stderr.puts "FAIL: #{msg}", @op_obj.banner, @op_obj.summarize
       exit(1)
     end
     
@@ -45,20 +45,16 @@ module Fernet
 
     def get_key
       if ENV["FERNET_CLI_KEY"].nil?
-        if options[:prompt]
+        if @options[:prompt]
           key = ask("Enter Key: ") {|q| q.echo = false}
-        elsif options[:keyfile]
-          key = File.read(options[:keyfile]).chomp
+        elsif @options[:keyfile]
+          key = File.read(@options[:keyfile])
         end
       else
         key=ENV["FERNET_CLI_KEY"]
       end
 
-      if key.nil?
-        $stderr.puts "i have no key"
-        $stderr.puts op.banner, op.summarize
-        exit(1)
-      end
+      abort("please specify a key") if key.nil?
 
       key.chomp
     end
