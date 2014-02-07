@@ -18,7 +18,7 @@ module Fernet
     
     def parse_args
       op = OptionParser.new do |opts|
-        opts.banner = "Usage: #{$0} [-p | -k <keyfile>] -i <infile> -o <outfile>"
+        opts.banner = "Usage: #{File.basename($0)} [-p | -k <keyfile>] -i <infile> -o <outfile>"
 
         opts.on("-p", "--prompt", "Prompt for keys") do |prompt|
           @options[:prompt] = prompt
